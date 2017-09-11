@@ -1,1 +1,1 @@
-# MyServerForSPAS-Axios-instead-sockets
+# MyServerForSPAs - Axios instead socket.io
