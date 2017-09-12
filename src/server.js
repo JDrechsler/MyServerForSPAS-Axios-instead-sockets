@@ -3,6 +3,8 @@
 var express = require('express')
 var app = express()
 var server = require('http').Server(app)
+var exec = require('child_process').exec
+const WPM = "C:\\Users\\AdminUS\\Documents\\TheForestHackCPP\\MyServerForSPAs-master\\src\\cpp\\WPM.exe"
 var port = process.env.PORT || 3000
 
 server.listen(port, function () {
@@ -41,9 +43,37 @@ app.get('/findWindowStatus', function (req, res) {
 	getFindWindowStatus(className, res)
 });
 
+app.post('/bacon', function name(req, res) {
+	console.log('Bacooon requested')
+	console.log(req + res)
+})
+
+app.get('/writeProcessMemory', function (req, res) {
+	var procName = req.query.procName
+	var address = req.query.address
+	var newValue = req.query.newValue
+	console.log(procName);
+	console.log(address);
+	console.log(newValue);
+	executeWriteProcessMemory(procName, address, newValue, res)
+});
+
 function getFindWindowStatus(className, res) {
-	var exec = require('child_process').exec;
 	var child = exec(`C:\\Users\\AdminUS\\Documents\\TheForestHackCPP\\MyServerForSPAs-master\\src\\cpp\\FindWindow.exe ${className}`);
+	child.stdout.on('data', function (data) {
+		console.log('stdout: ' + data);
+	});
+	child.stderr.on('data', function (data) {
+		console.log('stdout: ' + data);
+	});
+	child.on('exit', function (code) {
+		console.log('exit code: ' + code);
+		res.send(code.toString())
+	});
+}
+
+function executeWriteProcessMemory(procName, address, newValue, res) {
+	var child = exec(`${WPM} -writeProcessMemory procName:${procName} address:${address} newValue:${newValue}`);
 	child.stdout.on('data', function (data) {
 		console.log('stdout: ' + data);
 	});
